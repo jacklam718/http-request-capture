@@ -2,7 +2,7 @@
 # --*--coding: utf-8 --*--
 
 import time
-# from scapy.all import TCP, IP, sniff, Raw
+from scapy.all import TCP, IP, sniff, Raw
 from logger import log
 
 class HttpRequestCapture(object):
