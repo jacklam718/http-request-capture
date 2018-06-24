@@ -11,8 +11,6 @@ class HttpRequestCapture(object):
         self.iface = iface
         self.filter = filter
 
-        print(port, filter, iface)
-
         self.http_load = ''
         self.http_fragged = False
         self.http_pack = None
