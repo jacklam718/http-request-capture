@@ -24,6 +24,12 @@ class HttpRequestCapture(object):
         self.parse_http(pkt[Raw].load, pkt[IP].ack)
 
     def parse_http(self, load, ack):
+        # try decode to utf-8
+        try:
+            load = load.decode('utf-8')
+        except (AttributeError, UnicodeDecodeError):
+            pass
+
         if ack == self.http_pack:
             self.http_load = self.http_load + load
             load = self.http_load
@@ -67,7 +73,7 @@ class HttpRequestCapture(object):
         sniff(
             prn=self.parser,
             filter=self.filter,
-            iface=self.iface
+            iface=self.iface,
         )
 
 if __name__ == "__main__":
