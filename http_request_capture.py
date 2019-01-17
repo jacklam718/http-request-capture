@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 # --*--coding: utf-8 --*--
 
-from kamene.all import IP, Raw, sniff
+from scapy.all import IP, Raw, sniff
 from logger import log, writeLog
 
 def extract_headers_from_request_payload(payload):
@@ -21,20 +21,21 @@ def find_url_from_headers(headers):
     return ''.join([host, uri])
 
 def http_parser():
-    payload = ''
-    last_ack = None
+    payload = {'global' : ''}
+    last_ack = {'global' : None}
     def parse_http_request(pkt):
         if not pkt.haslayer(Raw):
             return
         # if latest ack number same as last_ack means: it's segmented
-        nonlocal payload, last_ack
-        if pkt[IP].ack == last_ack:
-            payload = payload + pkt[Raw].load.decode('utf-8', 'ignore')
+        #nonlocal payload, last_ack
+
+        if pkt[IP].ack == last_ack['global']:
+            payload['global'] = payload['global'] + pkt[Raw].load.decode('utf-8', 'ignore')
         else:
-            payload = pkt[Raw].load.decode('utf-8', 'ignore')
-            last_ack = pkt[IP].ack
+            payload['global'] = pkt[Raw].load.decode('utf-8', 'ignore')
+            last_ack['global'] = pkt[IP].ack
         # find request url and log it if found
-        url = find_url_from_headers(extract_headers_from_request_payload(payload))
+        url = find_url_from_headers(extract_headers_from_request_payload(payload['global']))
         if url:
             log(url)
             writeLog(url)
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser()
     # get args from cli
-    parser.add_argument('--iface', default='en0', type=str)
+    parser.add_argument('--iface', default='eth0', type=str)
     parser.add_argument('--port', default=80, type=int)
     args = parser.parse_args()
     log(
