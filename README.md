@@ -1,11 +1,14 @@
 ## Http Request Capture written in Python
 
 ### Usage
-`sudo python http_request_capture.py`
+`sudo python3 http_request_capture.py --iface en0 --port 80`
 #### arguments
-- `--port` - default 80
-- `--iface` - default en0
-- `--filter` - default tcp
+- `--iface` - default `en0`
+- `--port` - default `80`
+
+Requirements:
+* Python3
+* [kamene](https://github.com/phaethon/kamene)
 
 
 ##### http made from browser
